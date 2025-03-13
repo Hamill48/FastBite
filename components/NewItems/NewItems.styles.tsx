@@ -1,8 +1,8 @@
 import { StyleSheet } from "react-native";
 
-const NewItemsStyle = StyleSheet.create({
+const NewItemsStyles = StyleSheet.create({
   newItemsContainer: {
-    backgroundColor: "red",
+    backgroundColor: "#B63130",
     height: 300,
     paddingBottom: 20,
   },
@@ -26,4 +26,4 @@ const NewItemsStyle = StyleSheet.create({
   },
 });
 
-export default NewItemsStyle;
+export default NewItemsStyles;
