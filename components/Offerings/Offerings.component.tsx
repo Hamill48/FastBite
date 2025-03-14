@@ -3,9 +3,18 @@ import { ScrollView, View, Text, TouchableOpacity, Image } from "react-native";
 import OfferingsStyles from "./Offerings.styles";
 
 const Offerings = () => {
+  const handleOfferingButton = () => {
+    console.log('More offers button pressed!');
+  }
+
   return (
     <View style={OfferingsStyles.offeringsContainer}>
-      <Text style={OfferingsStyles.offeringsTitle}>Kínálat</Text>
+      <View style={OfferingsStyles.offeringsHeader}>
+        <Text style={OfferingsStyles.offeringsTitle}>Kínálat</Text>
+        <TouchableOpacity onPress={handleOfferingButton}>
+          <Text style={OfferingsStyles.offeringsButton}>Teljes kínálat</Text>
+        </TouchableOpacity>
+      </View>
       <ScrollView
         horizontal
         contentContainerStyle={{

@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, TouchableOpacity, Image } from "react-native";
 import NewItemsStyles from "./NewItems.styles";
 
 const NewItems = () => {
@@ -14,14 +14,32 @@ const NewItems = () => {
         showsHorizontalScrollIndicator={false}
       >
         <TouchableOpacity style={NewItemsStyles.newItem}>
+          <Image
+            source={{
+              uri: "https://maffiapizza.rk-team.hu/wp-content/uploads/2025/02/pizza-icon.webp",
+            }}
+            style={{ width: 50, height: 50 }}
+          />
           <Text>Barbecue</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={NewItemsStyles.newItem}>
+        <Image
+            source={{
+              uri: "https://maffiapizza.rk-team.hu/wp-content/uploads/2025/02/pizza-icon.webp",
+            }}
+            style={{ width: 50, height: 50 }}
+          />
           <Text>Maffia</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={NewItemsStyles.newItem}>
+        <Image
+            source={{
+              uri: "https://maffiapizza.rk-team.hu/wp-content/uploads/2025/02/pizza-icon.webp",
+            }}
+            style={{ width: 50, height: 50 }}
+          />
           <Text>Rustico</Text>
         </TouchableOpacity>
       </ScrollView>

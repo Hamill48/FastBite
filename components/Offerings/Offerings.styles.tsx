@@ -10,9 +10,21 @@ const OfferingsStyles = StyleSheet.create({
     paddingBottom: 20,
   },
 
+  offeringsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
   offeringsTitle: {
     fontWeight: "bold",
     fontSize: 20,
+    margin: 20,
+  },
+
+  offeringsButton: {
+    textDecorationLine: 'underline',
+    fontSize: 15,
     margin: 20,
   },
 
