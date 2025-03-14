@@ -16,9 +16,9 @@ const NewItems = () => {
         <TouchableOpacity style={NewItemsStyles.newItem}>
           <Image
             source={{
-              uri: "https://maffiapizza.rk-team.hu/wp-content/uploads/2025/02/pizza-icon.webp",
+              uri: "https://maffiapizza.rk-team.hu/wp-content/uploads/2025/02/barbecue-2.webp",
             }}
-            style={{ width: 50, height: 50 }}
+            style={{ width: 150, height: 150 }}
           />
           <Text>Barbecue</Text>
         </TouchableOpacity>
@@ -26,9 +26,9 @@ const NewItems = () => {
         <TouchableOpacity style={NewItemsStyles.newItem}>
         <Image
             source={{
-              uri: "https://maffiapizza.rk-team.hu/wp-content/uploads/2025/02/pizza-icon.webp",
+              uri: "https://maffiapizza.rk-team.hu/wp-content/uploads/2025/02/Maffia.webp",
             }}
-            style={{ width: 50, height: 50 }}
+            style={{ width: 150, height: 150 }}
           />
           <Text>Maffia</Text>
         </TouchableOpacity>
@@ -36,9 +36,9 @@ const NewItems = () => {
         <TouchableOpacity style={NewItemsStyles.newItem}>
         <Image
             source={{
-              uri: "https://maffiapizza.rk-team.hu/wp-content/uploads/2025/02/pizza-icon.webp",
+              uri: "https://maffiapizza.rk-team.hu/wp-content/uploads/2025/02/Rustico.webp",
             }}
-            style={{ width: 50, height: 50 }}
+            style={{ width: 150, height: 150 }}
           />
           <Text>Rustico</Text>
         </TouchableOpacity>
