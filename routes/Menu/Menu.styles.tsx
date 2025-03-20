@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-const HomeScreenStyles = StyleSheet.create({
+const MenuStyles = StyleSheet.create({
   safeContainer: {
     flex: 1, // Biztosítja, hogy a SafeAreaView kitöltse a teljes képernyőt
   },
@@ -8,9 +8,10 @@ const HomeScreenStyles = StyleSheet.create({
   container: {
     flexGrow: 1,
     paddingVertical: 40,
-    backgroundColor: "#fff",
-    alignItems: "center",
     justifyContent: "center",
+    alignItems: "center",
+    paddingLeft: 20,
+    paddingRight: 20,
   },
 
   title: {
@@ -19,4 +20,4 @@ const HomeScreenStyles = StyleSheet.create({
   },
 });
 
-export default HomeScreenStyles;
+export default MenuStyles;
