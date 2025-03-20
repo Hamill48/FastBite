@@ -1,11 +1,13 @@
 import { ScrollView, View, Text, TouchableOpacity, Image } from "react-native";
-
 import OfferingsStyles from "./Offerings.styles";
+import { useNavigation } from "@react-navigation/native";
 
 const Offerings = () => {
+  const navigation = useNavigation();
+
   const handleOfferingButton = () => {
-    console.log('More offers button pressed!');
-  }
+    navigation.navigate("Étlap");
+  };
 
   return (
     <View style={OfferingsStyles.offeringsContainer}>
