@@ -12,7 +12,7 @@ const FoodList = ({ foods }) => {
     <View style={foodListStyles.container}>
       {foods.map((food) => (
         <TouchableOpacity
-          onPress={() => navigation.navigate("FoodDetail", { foodID: food.id })}
+          onPress={() => navigation.navigate("FoodDetail", { food })}
           key={food.id}
           style={foodListStyles.foodContainer}
         >
