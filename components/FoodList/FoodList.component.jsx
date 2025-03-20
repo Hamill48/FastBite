@@ -1,13 +1,21 @@
 import React from "react";
-import { View, Image, Text } from "react-native";
+import { View, Image, Text, TouchableOpacity } from "react-native";
+
+import { useNavigation } from "@react-navigation/native";
 
 import foodListStyles from "./FoodList.styles";
 
 const FoodList = ({ foods }) => {
+  const navigation = useNavigation();
+
   return (
     <View style={foodListStyles.container}>
       {foods.map((food) => (
-        <View key={food.id} style={foodListStyles.foodContainer}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("FoodDetail", { foodID: food.id })}
+          key={food.id}
+          style={foodListStyles.foodContainer}
+        >
           <Image
             source={{
               uri: food.image,
@@ -15,7 +23,7 @@ const FoodList = ({ foods }) => {
             style={foodListStyles.image}
           />
           <Text>{food.name}</Text>
-        </View>
+        </TouchableOpacity>
       ))}
     </View>
   );
