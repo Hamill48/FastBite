@@ -5,6 +5,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 import HomeScreen from "./routes/HomeScreen/HomeScreen.route";
 import MenuStack from "./navigation/MenuStack";
+import CartRoute from "./routes/Cart/Cart.route";
 
 const Tab = createBottomTabNavigator();
 
@@ -39,7 +40,7 @@ export default function App() {
           />
           <Tab.Screen
             name="Kosár"
-            component={MenuStack}
+            component={CartRoute}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="cart-outline" size={size} color={color} />
