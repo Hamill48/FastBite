@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, SafeAreaView } from "react-native";
+import { Text, SafeAreaView } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../utils/firebaseConfig";
-
-import FoodList from "../../components/FoodList/FoodList.component";
-
-import MenuStyles from "./Menu.styles";
 import { ScrollView } from "react-native-gesture-handler";
 import { StatusBar } from 'expo-status-bar';
+
+import FoodList from "../../components/FoodList/FoodList.component";
+import BackButton from "../../components/BackButton/BackButton.component";
+
+import MenuStyles from "./Menu.styles";
 
 const MenuRoute = () => {
   const [foods, setFoods] = useState([]);
@@ -43,13 +44,12 @@ const MenuRoute = () => {
 
     fetchProducts();
   }, []);
-
-  console.log("Foods:", foods); // Csak akkor fut le, ha a foods frissül
-
+  
   return (
     <SafeAreaView
       style={MenuStyles.safeContainer}
     >
+      <BackButton />
       <ScrollView contentContainerStyle={MenuStyles.container}>
       <Text style={MenuStyles.title}>Kínálatunk</Text>
 

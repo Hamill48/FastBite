@@ -37,47 +37,53 @@ const FoodDetailStyles = StyleSheet.create({
 
   sizeBox: {
     borderWidth: 1,
-    borderColor: 'black',
-    backgroundColor: '#fff',
+    borderColor: "black",
+    backgroundColor: "#fff",
     padding: 12,
     marginVertical: 20,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   sizeBoxSelected: {
-    backgroundColor: '#B63130',
-    borderColor: 'darkred',
+    backgroundColor: "#B63130",
+    borderColor: "darkred",
   },
 
   sizeText: {
-    color: '#000',
+    color: "#000",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 
   sizeTextSelected: {
-    color: '#fff',
+    color: "#fff",
   },
 
   sizeButtonsContainer: {
-    flexDirection: 'row',
-    width: '100%',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "space-around",
+    marginBottom: 20,
+  },
+
+  price: {
+    fontSize: 18,
+    marginBottom: 20,
   },
 
   addToCartButton: {
-    backgroundColor: '#B63130',
+    backgroundColor: "#B63130",
     paddingVertical: 12,
     paddingHorizontal: 24,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 20,
   },
 
   addToCartText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
 });
 
