@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Text,
   SafeAreaView,
@@ -9,29 +9,42 @@ import {
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useRoute } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import BackButton from "../../components/BackButton/BackButton.component";
+import { sortSizes } from "../../utils/sortedSize/sortedSize";
 
 import FoodDetailStyles from "./FoodDetails.styles";
 
 const FoodDetail = () => {
-  const [selectedSize, setSelectedSize] = useState("size1");
-
   const route = useRoute();
-  const { food } = route.params; // Lekérjük a foodID-t a paraméterekből
+  const { food } = route.params || {};
+  const sortedSizes = sortSizes(food.sizes);
 
-  const sortedSizes = Object.entries(food.sizes).sort((a, b) => {
-    const aText = a[1][`${a[0]}_name`];
-    const bText = b[1][`${b[0]}_name`];
-
-    // cm számok kinyerése zárójelből, pl. "Kicsi (26cm)" → 26
-    const aCm = parseInt(aText.match(/\((\d+)cm\)/)?.[1] || 0);
-    const bCm = parseInt(bText.match(/\((\d+)cm\)/)?.[1] || 0);
-
-    return aCm - bCm; // növekvő sorrend
+  const [selectedSizeData, setSelectedSizeData] = useState({
+    size: null,
+    price: null,
   });
 
-  // Itt kérheted le az étel részletes adatait a foodID alapján (pl. API, Firebase)
+  useEffect(() => {
+    if (food) {
+      setSelectedSizeData({
+        size: "size1",
+        price: food.sizes["size1"]["size1_price"],
+      });
+    }
+  }, [food]);
+
+  const saveCart = async () => {
+    const cartItem = {
+      ...food,
+      size: selectedSizeData.size,
+      price: selectedSizeData.price,
+    };
+
+    await AsyncStorage.setItem("cart", JSON.stringify(cartItem));
+    console.log("Kosár tartalma:", JSON.stringify(cartItem));
+  };
 
   return (
     <SafeAreaView style={FoodDetailStyles.safeContainer}>
@@ -66,12 +79,17 @@ const FoodDetail = () => {
 
         <View style={FoodDetailStyles.sizeButtonsContainer}>
           {sortedSizes.map(([key, value]) => {
-            const isSelected = selectedSize === key;
+            const isSelected = selectedSizeData.size === key;
 
             return (
               <TouchableOpacity
                 key={key}
-                onPress={() => setSelectedSize(key)}
+                onPress={() =>
+                  setSelectedSizeData({
+                    size: key,
+                    price: value[`${key}_price`],
+                  })
+                }
                 style={[
                   FoodDetailStyles.sizeBox,
                   isSelected && FoodDetailStyles.sizeBoxSelected,
@@ -89,13 +107,14 @@ const FoodDetail = () => {
             );
           })}
         </View>
-
         <Text style={FoodDetailStyles.price}>
-          Ár: {food.sizes[selectedSize][`${selectedSize}_price`]} Ft
+          Ár: {selectedSizeData.price} Ft
         </Text>
 
         <TouchableOpacity style={FoodDetailStyles.addToCartButton}>
-          <Text style={FoodDetailStyles.addToCartText}>KOSÁRBA TESZEM</Text>
+          <Text style={FoodDetailStyles.addToCartText} onPress={saveCart}>
+            KOSÁRBA TESZEM
+          </Text>
         </TouchableOpacity>
 
         {/* További étel adatok: név, leírás, kép, stb. */}
