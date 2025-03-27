@@ -38,14 +38,30 @@ const FoodDetail = () => {
   }, [food]);
 
   const saveCart = async () => {
-    const cartItem = {
+    let cart = await AsyncStorage.getItem("cart");
+    cart = cart ? JSON.parse(cart) : [];
+
+    const newCartItem = {
       ...food,
       size: selectedSizeData.size,
       price: selectedSizeData.price,
+      quantity: 1,
     };
 
-    await AsyncStorage.setItem("cart", JSON.stringify(cartItem));
-    console.log("Kosár tartalma:", JSON.stringify(cartItem));
+    // Ellenőrizzük, hogy a kiválasztott étel index-e és mérete már létezik-e
+    const existingItemIndex = cart.findIndex(
+      (item) => item.id === newCartItem.id && item.size === newCartItem.size
+    );
+
+    if (existingItemIndex >= 0) {
+      // Létezik már ez a termék, növeljük a mennyiségét
+      cart[existingItemIndex].quantity += 1;
+    } else {
+      cart.push(newCartItem);
+    }
+
+    // Elmentjük a localStorage-ba
+    await AsyncStorage.setItem("cart", JSON.stringify(cart));
 
     Alert.alert("A terméket sikeresen hozzáadtad a kosárhoz!");
   };

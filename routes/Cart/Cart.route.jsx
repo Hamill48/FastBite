@@ -53,7 +53,22 @@ const CartRoute = () => {
     setCartUpdated((prev) => !prev);
   };
 
-  console.log("Kosár oldal: ", cart);
+  const updateQuantity = async (id, size, change) => {
+    const storedCart = await AsyncStorage.getItem("cart");
+    let cart = storedCart ? JSON.parse(storedCart) : [];
+
+    cart = cart.map((item) =>
+      item.id === id && item.size === size
+        ? { ...item, quantity: item.quantity + change }
+        : item
+    );
+
+    // Ha az új quantity 0, szűrjük ki az adott elemet
+    cart = cart.filter((item) => item.quantity > 0);
+
+    await AsyncStorage.setItem("cart", JSON.stringify(cart));
+    setCart(cart);
+  };
 
   return (
     <SafeAreaView style={CartRouteStyles.safeContainer}>
@@ -63,84 +78,66 @@ const CartRoute = () => {
         {cart.length === 0 ? (
           <Text>A kosár üres.</Text>
         ) : (
-          <View>
-            <View style={CartRouteStyles.itemContainer}>
-              <Image
-                source={{
-                  uri: cart.image,
+          cart.map((item) => (
+            <View key={`${item.id}-${item.size}`}>
+              <View style={CartRouteStyles.itemContainer}>
+                <Image
+                  source={{
+                    uri: item.image,
+                  }}
+                  style={{ width: 100, height: 100 }}
+                />
+
+                <View style={CartRouteStyles.itemDetails}>
+                  <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
+                  <Text>{item.sizes[item.size][`${item.size}_name`]}</Text>
+                  <Text>{item.price} Ft</Text>
+                </View>
+
+                <View style={CartRouteStyles.itemQuantityContainer}>
+                  <TouchableOpacity
+                    onPress={() => updateQuantity(item.id, item.size, -1)}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 30,
+                        color: "white",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      -
+                    </Text>
+                  </TouchableOpacity>
+                  <Text style={{ color: "white" }}>{item.quantity}</Text>
+
+                  <TouchableOpacity
+                    onPress={() => updateQuantity(item.id, item.size, 1)}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        color: "white",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      +
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              {/* <TouchableOpacity
+                onPress={async () => {
+                  await AsyncStorage.clear();
+                  updateCart();
+                  console.log("Kosár törölve!");
                 }}
-                style={{ width: 100, height: 100 }}
-              />
-
-              <View style={CartRouteStyles.itemDetails}>
-                <Text style={{ fontWeight: "bold" }}>{cart.name}</Text>
-                <Text>{cart.price} Ft</Text>
-              </View>
-
-              <View style={CartRouteStyles.itemQuantityContainer}>
-                <TouchableOpacity>
-                  <Text
-                    style={{ fontSize: 30, color: "white", fontWeight: "bold" }}
-                  >
-                    -
-                  </Text>
-                </TouchableOpacity>
-                <Text style={{ color: "white" }}>1</Text>
-
-                <TouchableOpacity>
-                  <Text
-                    style={{ fontSize: 20, color: "white", fontWeight: "bold" }}
-                  >
-                    +
-                  </Text>
-                </TouchableOpacity>
-              </View>
+              >
+                <Text>Kosár törlése</Text>
+              </TouchableOpacity> */}
             </View>
-            <View style={CartRouteStyles.itemContainer}>
-              <Image
-                source={{
-                  uri: cart.image,
-                }}
-                style={{ width: 100, height: 100 }}
-              />
-
-              <View style={CartRouteStyles.itemDetails}>
-                <Text style={{ fontWeight: "bold" }}>{cart.name}</Text>
-                <Text>{cart.price} Ft</Text>
-              </View>
-
-              <View style={CartRouteStyles.itemQuantityContainer}>
-                <TouchableOpacity>
-                  <Text
-                    style={{ fontSize: 30, color: "white", fontWeight: "bold" }}
-                  >
-                    -
-                  </Text>
-                </TouchableOpacity>
-                <Text style={{ color: "white" }}>1</Text>
-
-                <TouchableOpacity>
-                  <Text
-                    style={{ fontSize: 20, color: "white", fontWeight: "bold" }}
-                  >
-                    +
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
+          ))
         )}
-
-        <TouchableOpacity
-          onPress={async () => {
-            await AsyncStorage.clear();
-            updateCart();
-            console.log("Kosár törölve!");
-          }}
-        >
-          <Text>Kosár törlése</Text>
-        </TouchableOpacity>
-
         <StatusBar style="auto" />
       </ScrollView>
     </SafeAreaView>
