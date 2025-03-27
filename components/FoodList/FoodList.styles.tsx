@@ -15,7 +15,8 @@ const foodListStyles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    marginBottom: 40,
+    marginVertical: 40,
+    marginHorizontal: 10,
   },
   image: {
     width: 100,

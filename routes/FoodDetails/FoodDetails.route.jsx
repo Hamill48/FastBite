@@ -6,6 +6,7 @@ import {
   Image,
   View,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useRoute } from "@react-navigation/native";
@@ -18,8 +19,9 @@ import FoodDetailStyles from "./FoodDetails.styles";
 
 const FoodDetail = () => {
   const route = useRoute();
-  const { food } = route.params || {};
-  const sortedSizes = sortSizes(food.sizes);
+  const { food = null } = route.params || {};
+  //const sortedSizes = food ? sortSizes(food.sizes) : [];
+  //console.log(sortedSizes);
 
   const [selectedSizeData, setSelectedSizeData] = useState({
     size: null,
@@ -27,7 +29,7 @@ const FoodDetail = () => {
   });
 
   useEffect(() => {
-    if (food) {
+    if (food && food.sizes) {
       setSelectedSizeData({
         size: "size1",
         price: food.sizes["size1"]["size1_price"],
@@ -44,82 +46,94 @@ const FoodDetail = () => {
 
     await AsyncStorage.setItem("cart", JSON.stringify(cartItem));
     console.log("Kosár tartalma:", JSON.stringify(cartItem));
+
+    Alert.alert("A terméket sikeresen hozzáadtad a kosárhoz!");
   };
 
   return (
     <SafeAreaView style={FoodDetailStyles.safeContainer}>
       <BackButton />
-      <ScrollView contentContainerStyle={FoodDetailStyles.container}>
-        <Image
-          source={{
-            uri: food.image,
-          }}
-          style={{ width: 250, height: 250, marginBottom: 20 }}
-        />
 
-        <Text style={FoodDetailStyles.title}>{food.name}</Text>
+      {food ? (
+        <ScrollView contentContainerStyle={FoodDetailStyles.container}>
+          <Image
+            source={{
+              uri: food.image,
+            }}
+            style={{ width: 250, height: 250, marginBottom: 20 }}
+          />
 
-        <View style={FoodDetailStyles.ingredientsContainer}>
-          {food.ingredients.map((ingredient, index) => (
-            <Text key={index}>
-              {index === food.ingredients.length - 1
-                ? ingredient
-                : `${ingredient}, `}
-            </Text>
-          ))}
-        </View>
+          <Text style={FoodDetailStyles.title}>{food.name}</Text>
 
-        <View style={FoodDetailStyles.allergensContainer}>
-          {food.allergens.map((allergen, index) => (
-            <Text key={index}>
-              {index === food.allergens.length - 1 ? allergen : `${allergen}, `}
-            </Text>
-          ))}
-        </View>
+          <View style={FoodDetailStyles.ingredientsContainer}>
+            {food.ingredients.map((ingredient, index) => (
+              <Text key={index}>
+                {index === food.ingredients.length - 1
+                  ? ingredient
+                  : `${ingredient}, `}
+              </Text>
+            ))}
+          </View>
 
-        <View style={FoodDetailStyles.sizeButtonsContainer}>
-          {sortedSizes.map(([key, value]) => {
-            const isSelected = selectedSizeData.size === key;
+          <View style={FoodDetailStyles.allergensContainer}>
+            {food.allergens.map((allergen, index) => (
+              <Text key={index}>
+                {index === food.allergens.length - 1
+                  ? allergen
+                  : `${allergen}, `}
+              </Text>
+            ))}
+          </View>
 
-            return (
-              <TouchableOpacity
-                key={key}
-                onPress={() =>
-                  setSelectedSizeData({
-                    size: key,
-                    price: value[`${key}_price`],
-                  })
-                }
-                style={[
-                  FoodDetailStyles.sizeBox,
-                  isSelected && FoodDetailStyles.sizeBoxSelected,
-                ]}
-              >
-                <Text
+          <View style={FoodDetailStyles.sizeButtonsContainer}>
+            {Object.entries(food.sizes).map(([key, value]) => {
+              const isSelected = selectedSizeData.size === key;
+
+              return (
+                <TouchableOpacity
+                  key={key}
+                  onPress={() =>
+                    setSelectedSizeData({
+                      size: key,
+                      price: value[`${key}_price`], // Helyes kulcs
+                    })
+                  }
                   style={[
-                    FoodDetailStyles.sizeText,
-                    isSelected && FoodDetailStyles.sizeTextSelected,
+                    FoodDetailStyles.sizeBox,
+                    isSelected && FoodDetailStyles.sizeBoxSelected,
                   ]}
                 >
-                  {value[`${key}_name`]}
-                </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-        <Text style={FoodDetailStyles.price}>
-          Ár: {selectedSizeData.price} Ft
-        </Text>
+                  <Text
+                    style={[
+                      FoodDetailStyles.sizeText,
+                      isSelected && FoodDetailStyles.sizeTextSelected,
+                    ]}
+                  >
+                    {value[`${key}_name`]} {/* Helyes kulcs */}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
 
-        <TouchableOpacity style={FoodDetailStyles.addToCartButton}>
-          <Text style={FoodDetailStyles.addToCartText} onPress={saveCart}>
-            KOSÁRBA TESZEM
+          <Text style={FoodDetailStyles.price}>
+            Ár: {selectedSizeData.price} Ft
           </Text>
-        </TouchableOpacity>
 
-        {/* További étel adatok: név, leírás, kép, stb. */}
-        <StatusBar style="auto" />
-      </ScrollView>
+          <TouchableOpacity style={FoodDetailStyles.addToCartButton}>
+            <Text style={FoodDetailStyles.addToCartText} onPress={saveCart}>
+              KOSÁRBA TESZEM
+            </Text>
+          </TouchableOpacity>
+
+          {/* További étel adatok: név, leírás, kép, stb. */}
+          <StatusBar style="auto" />
+        </ScrollView>
+      ) : (
+        <ScrollView contentContainerStyle={FoodDetailStyles.container}>
+          <Text>Hiba: Az étel adatai nem érhetők el.</Text>
+        </ScrollView>
+      )}
     </SafeAreaView>
   );
 };
