@@ -138,6 +138,16 @@ const CartRoute = () => {
             </View>
           ))
         )}
+
+        {cart.length === 0 ? (
+          <View></View>
+        ) : (
+          <TouchableOpacity style={CartRouteStyles.orderButton}>
+            <Text style={CartRouteStyles.orderButtonText}>
+              TOVÁBB A FIZETÉSHEZ
+            </Text>
+          </TouchableOpacity>
+        )}
         <StatusBar style="auto" />
       </ScrollView>
     </SafeAreaView>
