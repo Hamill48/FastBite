@@ -10,10 +10,13 @@ import {
 import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 
 import CartRouteStyles from "./Cart.styles";
 
 const CartRoute = () => {
+  const navigation = useNavigation();
+
   const [cart, setCart] = useState([]);
   const [cartUpdated, setCartUpdated] = useState(false);
 
@@ -142,7 +145,12 @@ const CartRoute = () => {
         {cart.length === 0 ? (
           <View></View>
         ) : (
-          <TouchableOpacity style={CartRouteStyles.orderButton}>
+          <TouchableOpacity
+            style={CartRouteStyles.orderButton}
+            onPress={() => {
+              navigation.navigate("Checkout");
+            }}
+          >
             <Text style={CartRouteStyles.orderButtonText}>
               TOVÁBB A FIZETÉSHEZ
             </Text>

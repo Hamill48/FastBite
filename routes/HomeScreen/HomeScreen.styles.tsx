@@ -7,7 +7,7 @@ const HomeScreenStyles = StyleSheet.create({
 
   container: {
     flexGrow: 1,
-    paddingVertical: 40,
+    paddingTop: 60,
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
@@ -15,6 +15,7 @@ const HomeScreenStyles = StyleSheet.create({
 
   title: {
     fontSize: 30,
+    fontWeight: "bold",
     marginBottom: 40,
   },
 });

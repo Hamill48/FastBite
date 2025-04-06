@@ -7,7 +7,7 @@ const CartRouteStyles = StyleSheet.create({
 
   container: {
     flexGrow: 1,
-    paddingVertical: 40,
+    paddingTop: 60,
     paddingLeft: 10,
     paddingRight: 10,
     alignItems: "center",
@@ -16,7 +16,7 @@ const CartRouteStyles = StyleSheet.create({
   title: {
     fontSize: 30,
     fontWeight: "bold",
-    marginTop: 40,
+    marginBottom: 40,
   },
 
   itemContainer: {

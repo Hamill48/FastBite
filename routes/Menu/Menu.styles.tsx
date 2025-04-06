@@ -7,7 +7,7 @@ const MenuStyles = StyleSheet.create({
 
   container: {
     flexGrow: 1,
-    paddingVertical: 40,
+    paddingTop: 60,
     justifyContent: "center",
     alignItems: "center",
     paddingLeft: 20,
@@ -16,6 +16,7 @@ const MenuStyles = StyleSheet.create({
 
   title: {
     fontSize: 30,
+    fontWeight: "bold",
     marginBottom: 40,
   },
 });

@@ -1,12 +1,12 @@
-export const sortSizes = (sizes) => {
-    return Object.entries(sizes).sort((a, b) => {
-      const aText = a[1][`${a[0]}_name`];
-      const bText = b[1][`${b[0]}_name`];
-  
-      // cm számok kinyerése zárójelből, pl. "Kicsi (26cm)" → 26
-      const aCm = parseInt(aText.match(/\((\d+)cm\)/)?.[1] || 0);
-      const bCm = parseInt(bText.match(/\((\d+)cm\)/)?.[1] || 0);
-  
-      return aCm - bCm; // növekvő sorrend
-    });
-};  
+export const sortedSize = (sizes) => {
+  return Object.entries(sizes).sort((a, b) => {
+    const aKey = a[0]; // pl. size1
+    const bKey = b[0]; // pl. size2
+
+    // size1 → 1, size2 → 2, stb.
+    const aNum = parseInt(aKey.replace("size", "")) || 0;
+    const bNum = parseInt(bKey.replace("size", "")) || 0;
+
+    return aNum - bNum;
+  });
+};

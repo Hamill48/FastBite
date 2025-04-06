@@ -13,15 +13,14 @@ import { useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import BackButton from "../../components/BackButton/BackButton.component";
-import { sortSizes } from "../../utils/sortedSize/sortedSize";
+import { sortedSize } from "../../utils/sortedSize/sortedSize";
 
 import FoodDetailStyles from "./FoodDetails.styles";
 
 const FoodDetail = () => {
   const route = useRoute();
   const { food = null } = route.params || {};
-  //const sortedSizes = food ? sortSizes(food.sizes) : [];
-  //console.log(sortedSizes);
+  const sortedSizes = food ? sortedSize(food.sizes) : [];
 
   const [selectedSizeData, setSelectedSizeData] = useState({
     size: null,
@@ -32,7 +31,7 @@ const FoodDetail = () => {
     if (food && food.sizes) {
       setSelectedSizeData({
         size: "size1",
-        price: food.sizes["size1"]["size1_price"],
+        price: food.sizes["size1"]["size_price"],
       });
     }
   }, [food]);
@@ -102,8 +101,11 @@ const FoodDetail = () => {
           </View>
 
           <View style={FoodDetailStyles.sizeButtonsContainer}>
-            {Object.entries(food.sizes).map(([key, value]) => {
+            {sortedSizes.map(([key, value]) => {
               const isSelected = selectedSizeData.size === key;
+
+              const sizeName = value.size_name || value[`${key}_name`];
+              const sizePrice = value.size_price || value[`${key}_price`];
 
               return (
                 <TouchableOpacity
@@ -111,7 +113,7 @@ const FoodDetail = () => {
                   onPress={() =>
                     setSelectedSizeData({
                       size: key,
-                      price: value[`${key}_price`], // Helyes kulcs
+                      price: sizePrice,
                     })
                   }
                   style={[
@@ -125,7 +127,7 @@ const FoodDetail = () => {
                       isSelected && FoodDetailStyles.sizeTextSelected,
                     ]}
                   >
-                    {value[`${key}_name`]} {/* Helyes kulcs */}
+                    {sizeName}
                   </Text>
                 </TouchableOpacity>
               );
