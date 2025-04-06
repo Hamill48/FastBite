@@ -12,6 +12,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFocusEffect } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 
+import { loadCart, updateCartQuantity } from "../../utils/cartStorage";
+import PrimaryButton from "../../components/PrimaryButton/PrimaryButton.component";
+
 import CartRouteStyles from "./Cart.styles";
 
 const CartRoute = () => {
@@ -20,15 +23,10 @@ const CartRoute = () => {
   const [cart, setCart] = useState([]);
   const [cartUpdated, setCartUpdated] = useState(false);
 
-  const loadCart = async () => {
-    try {
-      const jsonValue = await AsyncStorage.getItem("cart"); // 'cart' kulccsal mentett adatokat kérjük le
-      return jsonValue != null ? JSON.parse(jsonValue) : []; // Ha nincs adat, üres tömböt ad vissza
-    } catch (error) {
-      console.error("Hiba történt a kosár betöltésekor:", error);
-      return [];
-    }
-  };
+  const totalPrice = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
 
   // **1. useEffect az első betöltésre**
   useEffect(() => {
@@ -38,7 +36,7 @@ const CartRoute = () => {
     };
 
     fetchCart();
-  }, [cartUpdated]);
+  }, []);
 
   // **2. useFocusEffect a képernyő fókuszba kerülésére**
   useFocusEffect(
@@ -52,25 +50,9 @@ const CartRoute = () => {
     }, [])
   );
 
-  const updateCart = () => {
-    setCartUpdated((prev) => !prev);
-  };
-
   const updateQuantity = async (id, size, change) => {
-    const storedCart = await AsyncStorage.getItem("cart");
-    let cart = storedCart ? JSON.parse(storedCart) : [];
-
-    cart = cart.map((item) =>
-      item.id === id && item.size === size
-        ? { ...item, quantity: item.quantity + change }
-        : item
-    );
-
-    // Ha az új quantity 0, szűrjük ki az adott elemet
-    cart = cart.filter((item) => item.quantity > 0);
-
-    await AsyncStorage.setItem("cart", JSON.stringify(cart));
-    setCart(cart);
+    const updatedCart = await updateCartQuantity(id, size, change);
+    setCart(updatedCart); // <- beállítod az új kosarat a state-be
   };
 
   return (
@@ -145,16 +127,25 @@ const CartRoute = () => {
         {cart.length === 0 ? (
           <View></View>
         ) : (
-          <TouchableOpacity
-            style={CartRouteStyles.orderButton}
-            onPress={() => {
-              navigation.navigate("Checkout");
-            }}
-          >
-            <Text style={CartRouteStyles.orderButtonText}>
-              TOVÁBB A FIZETÉSHEZ
+          <View>
+            <Text style={CartRouteStyles.totalPrice}>
+              Összesen: {totalPrice} Ft
             </Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={CartRouteStyles.orderButton}
+              onPress={() => {
+                navigation.navigate("Checkout");
+              }}
+            >
+              <PrimaryButton
+                onPress={() => {
+                  navigation.navigate("Checkout");
+                }}
+              >
+                TOVÁBB A FIZETÉSHEZ
+              </PrimaryButton>
+            </TouchableOpacity>
+          </View>
         )}
         <StatusBar style="auto" />
       </ScrollView>

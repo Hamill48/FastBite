@@ -47,17 +47,10 @@ const CartRouteStyles = StyleSheet.create({
     backgroundColor: "#00A851",
   },
 
-  orderButton: {
-    backgroundColor: "#B63130",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    alignItems: "center",
+  totalPrice: {
     marginTop: 20,
-  },
-
-  orderButtonText: {
-    color: "white",
+    textAlign: "center",
+    fontSize: 20,
     fontWeight: "bold",
   },
 });
