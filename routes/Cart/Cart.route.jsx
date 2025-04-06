@@ -64,7 +64,11 @@ const CartRoute = () => {
           <Text>A kosár üres.</Text>
         ) : (
           cart.map((item) => (
-            <View key={`${item.id}-${item.size}`}>
+            <View
+              key={`${item.id}-${item.size}-${
+                item.extras?.map((extra) => extra.name).join("-") || "noextras"
+              }`}
+            >
               <View style={CartRouteStyles.itemContainer}>
                 <Image
                   source={{
@@ -75,8 +79,15 @@ const CartRoute = () => {
 
                 <View style={CartRouteStyles.itemDetails}>
                   <Text style={{ fontWeight: "bold" }}>{item.name}</Text>
-                  <Text>{item.sizes[item.size][`${item.size}_name`]}</Text>
+                  <Text>{item.sizeName}</Text>
                   <Text>{item.price} Ft</Text>
+
+                  {/* Kiválasztott extrák megjelenítése (összeggel) */}
+                  {item.extras && item.extras.length > 0 && (
+                    <Text style={{ fontSize: 12, color: "gray", marginTop: 5 }}>
+                      + Extrák
+                    </Text>
+                  )}
                 </View>
 
                 <View style={CartRouteStyles.itemQuantityContainer}>

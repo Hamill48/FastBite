@@ -27,6 +27,39 @@ const FoodDetail = () => {
     price: null,
   });
 
+  const [selectedExtras, setSelectedExtras] = useState([]);
+
+  // 🔥 Extrák kigyűjtése listába
+  const extrasArray = food?.extras
+    ? Object.entries(food.extras)
+        .filter(([key]) => key.includes("extra_name"))
+        .map(([key, value]) => {
+          const index = key.replace("extra_name", "");
+          return {
+            name: value,
+            price: food.extras[`extra_price${index}`] || 0,
+            id: index,
+          };
+        })
+    : [];
+
+  // Extra kiválasztás toggle
+  const toggleExtra = (extra) => {
+    if (selectedExtras.includes(extra.id)) {
+      setSelectedExtras((prev) => prev.filter((id) => id !== extra.id));
+    } else {
+      setSelectedExtras((prev) => [...prev, extra.id]);
+    }
+  };
+
+  // Extrák összára
+  const totalExtrasPrice = extrasArray
+    .filter((extra) => selectedExtras.includes(extra.id))
+    .reduce((sum, extra) => sum + extra.price, 0);
+
+  // Végső ár (méret + extrák)
+  const finalPrice = (selectedSizeData.price || 0) + totalExtrasPrice;
+
   useEffect(() => {
     if (food && food.sizes) {
       setSelectedSizeData({
@@ -41,25 +74,37 @@ const FoodDetail = () => {
     cart = cart ? JSON.parse(cart) : [];
 
     const newCartItem = {
-      ...food,
+      id: food.id,
+      name: food.name,
+      image: food.image,
       size: selectedSizeData.size,
-      price: selectedSizeData.price,
+      sizeName: food.sizes?.[selectedSizeData.size]?.size_name || "", // <<< biztonságos olvasás
+      price: finalPrice,
       quantity: 1,
+      extras: extrasArray.filter((extra) => selectedExtras.includes(extra.id)),
     };
 
-    // Ellenőrizzük, hogy a kiválasztott étel index-e és mérete már létezik-e
-    const existingItemIndex = cart.findIndex(
-      (item) => item.id === newCartItem.id && item.size === newCartItem.size
-    );
+    const existingItemIndex = cart.findIndex((item) => {
+      const sameIdAndSize =
+        item.id === newCartItem.id && item.size === newCartItem.size;
+
+      const sameExtras =
+        JSON.stringify(
+          item.extras?.sort((a, b) => a.name.localeCompare(b.name))
+        ) ===
+        JSON.stringify(
+          newCartItem.extras?.sort((a, b) => a.name.localeCompare(b.name))
+        );
+
+      return sameIdAndSize && sameExtras;
+    });
 
     if (existingItemIndex >= 0) {
-      // Létezik már ez a termék, növeljük a mennyiségét
       cart[existingItemIndex].quantity += 1;
     } else {
       cart.push(newCartItem);
     }
 
-    // Elmentjük a localStorage-ba
     await AsyncStorage.setItem("cart", JSON.stringify(cart));
 
     Alert.alert("A terméket sikeresen hozzáadtad a kosárhoz!");
@@ -71,12 +116,7 @@ const FoodDetail = () => {
 
       {food ? (
         <ScrollView contentContainerStyle={FoodDetailStyles.container}>
-          <Image
-            source={{
-              uri: food.image,
-            }}
-            style={{ width: 250, height: 250, marginBottom: 20 }}
-          />
+          <Image source={{ uri: food.image }} style={FoodDetailStyles.image} />
 
           <Text style={FoodDetailStyles.title}>{food.name}</Text>
 
@@ -100,10 +140,10 @@ const FoodDetail = () => {
             ))}
           </View>
 
+          {/* Méret választó */}
           <View style={FoodDetailStyles.sizeButtonsContainer}>
             {sortedSizes.map(([key, value]) => {
               const isSelected = selectedSizeData.size === key;
-
               const sizeName = value.size_name || value[`${key}_name`];
               const sizePrice = value.size_price || value[`${key}_price`];
 
@@ -134,9 +174,50 @@ const FoodDetail = () => {
             })}
           </View>
 
-          <Text style={FoodDetailStyles.price}>
-            Ár: {selectedSizeData.price} Ft
-          </Text>
+          {/* Extrák választó */}
+          {extrasArray.length > 0 && (
+            <View style={FoodDetailStyles.extrasContainer}>
+              <Text style={FoodDetailStyles.extrasTitle}>Extrák:</Text>
+
+              <View style={FoodDetailStyles.extrasList}>
+                {extrasArray.map((extra) => {
+                  const isSelected = selectedExtras.includes(extra.id);
+
+                  return (
+                    <TouchableOpacity
+                      key={extra.id}
+                      onPress={() => toggleExtra(extra)}
+                      style={[
+                        FoodDetailStyles.extraItem,
+                        isSelected && FoodDetailStyles.extraItemSelected,
+                      ]}
+                    >
+                      <View style={FoodDetailStyles.checkboxContainer}>
+                        <View
+                          style={[
+                            FoodDetailStyles.checkbox,
+                            isSelected && FoodDetailStyles.checkboxSelected,
+                          ]}
+                        />
+                        <Text
+                          style={[
+                            FoodDetailStyles.extraItemText,
+                            isSelected &&
+                              FoodDetailStyles.extraItemTextSelected,
+                          ]}
+                        >
+                          {extra.name} +{extra.price} Ft
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+            </View>
+          )}
+
+          {/* Ár + Kosárba gomb */}
+          <Text style={FoodDetailStyles.price}>Ár: {finalPrice} Ft</Text>
 
           <TouchableOpacity style={FoodDetailStyles.addToCartButton}>
             <Text style={FoodDetailStyles.addToCartText} onPress={saveCart}>
