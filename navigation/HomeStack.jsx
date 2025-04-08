@@ -1,14 +1,14 @@
 // src/navigation/MenuStack.js
 import { createStackNavigator } from "@react-navigation/stack";
-import MenuRoute from "../routes/Menu/Menu.route";
+import HomeScreen from "../routes/HomeScreen/HomeScreen.route";
 import FoodDetail from "../routes/FoodDetails/FoodDetails.route";
 
 const Stack = createStackNavigator();
 
-export default function MenuStack() {
+export default function HomeStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Menu" component={MenuRoute} />
+      <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="FoodDetail" component={FoodDetail} />
     </Stack.Navigator>
   );

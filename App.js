@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Ionicons from "react-native-vector-icons/Ionicons";
 
-import HomeScreen from "./routes/HomeScreen/HomeScreen.route";
+import HomeStack from "./navigation/HomeStack";
 import MenuStack from "./navigation/MenuStack";
 import CartStack from "./navigation/CartStack";
 
@@ -22,7 +22,7 @@ export default function App() {
         >
           <Tab.Screen
             name="Kezdőképernyő"
-            component={HomeScreen}
+            component={HomeStack}
             options={{
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="home-outline" size={size} color={color} />

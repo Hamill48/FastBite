@@ -3,7 +3,7 @@ import { Text, SafeAreaView } from "react-native";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../utils/firebaseConfig";
 import { ScrollView } from "react-native-gesture-handler";
-import { StatusBar } from 'expo-status-bar';
+import { StatusBar } from "expo-status-bar";
 
 import FoodList from "../../components/FoodList/FoodList.component";
 import BackButton from "../../components/BackButton/BackButton.component";
@@ -12,20 +12,6 @@ import MenuStyles from "./Menu.styles";
 
 const MenuRoute = () => {
   const [foods, setFoods] = useState([]);
-
- 
-    // Automatikusan 10 ételt generálunk, amikor a komponens betöltődik
-    // useEffect(() => {
-    //   const newFoods = new Array(10).fill({
-    //     id: 0,  // Kezdeti id érték, amit majd növelünk
-    //     name: 'Abbondante',
-    //     image: 'https://maffiapizza.rk-team.hu/wp-content/uploads/2025/02/abondante1.webp',
-    //   }).map((food, index) => ({
-    //     ...food,
-    //     id: index + 1,  // Az id-t növeljük 1-től
-    //   }));
-    //   setFoods(newFoods);
-    // }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -44,17 +30,15 @@ const MenuRoute = () => {
 
     fetchProducts();
   }, []);
-  
+
   return (
-    <SafeAreaView
-      style={MenuStyles.safeContainer}
-    >
+    <SafeAreaView style={MenuStyles.safeContainer}>
       <BackButton />
       <ScrollView contentContainerStyle={MenuStyles.container}>
-      <Text style={MenuStyles.title}>Kínálatunk</Text>
+        <Text style={MenuStyles.title}>Kínálatunk</Text>
 
-      <FoodList foods={foods}/>
-      <StatusBar style="auto" />
+        <FoodList foods={foods} />
+        <StatusBar style="auto" />
       </ScrollView>
     </SafeAreaView>
   );
