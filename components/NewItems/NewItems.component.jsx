@@ -8,6 +8,7 @@ import NewItemsStyles from "./NewItems.styles";
 
 const NewItems = () => {
   const [randomFoods, setRandomFoods] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -23,6 +24,8 @@ const NewItems = () => {
         );
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -42,12 +45,25 @@ const NewItems = () => {
         }}
         showsHorizontalScrollIndicator={false}
       >
-        {randomFoods.map((food) => {
-          return (
-            <>
+        {loading ? (
+          <>
+            <TouchableOpacity style={NewItemsStyles.newItem}>
+              <Text>Betöltés...</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={NewItemsStyles.newItem}>
+              <Text>Betöltés...</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={NewItemsStyles.newItem}>
+              <Text>Betöltés...</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          randomFoods.map((food) => {
+            return (
               <TouchableOpacity
                 style={NewItemsStyles.newItem}
                 onPress={() => navigation.navigate("FoodDetail", { food })}
+                key={food.id}
               >
                 <Image
                   source={{
@@ -57,9 +73,9 @@ const NewItems = () => {
                 />
                 <Text>{food.name}</Text>
               </TouchableOpacity>
-            </>
-          );
-        })}
+            );
+          })
+        )}
       </ScrollView>
     </View>
   );
