@@ -13,6 +13,7 @@ import { useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import BackButton from "../../components/BackButton/BackButton.component";
+import PrimaryButton from "../../components/PrimaryButton/PrimaryButton.component";
 import { sortedSize } from "../../utils/sortedSize/sortedSize";
 
 import FoodDetailStyles from "./FoodDetails.styles";
@@ -70,44 +71,65 @@ const FoodDetail = () => {
   }, [food]);
 
   const saveCart = async () => {
-    let cart = await AsyncStorage.getItem("cart");
-    cart = cart ? JSON.parse(cart) : [];
+    try {
+      // 1. Kosár betöltése
+      const storedCart = await AsyncStorage.getItem("cart");
+      let cart = storedCart ? JSON.parse(storedCart) : [];
 
-    const newCartItem = {
-      id: food.id,
-      name: food.name,
-      image: food.image,
-      size: selectedSizeData.size,
-      sizeName: food.sizes?.[selectedSizeData.size]?.size_name || "", // <<< biztonságos olvasás
-      price: finalPrice,
-      quantity: 1,
-      extras: extrasArray.filter((extra) => selectedExtras.includes(extra.id)),
-    };
+      // 2. Új tétel létrehozása
+      const newCartItem = {
+        id: food.id,
+        name: food.name,
+        image: food.image,
+        size: selectedSizeData.size,
+        sizeName: food.sizes?.[selectedSizeData.size]?.size_name || "",
+        price: finalPrice,
+        quantity: 1,
+        extras: extrasArray.filter((extra) =>
+          selectedExtras.includes(extra.id)
+        ),
+      };
 
-    const existingItemIndex = cart.findIndex((item) => {
-      const sameIdAndSize =
-        item.id === newCartItem.id && item.size === newCartItem.size;
+      // 3. Ellenőrzés, hogy létezik-e már ugyanilyen tétel
+      const existingItemIndex = cart.findIndex((item) => {
+        const sameIdAndSize =
+          item.id === newCartItem.id && item.size === newCartItem.size;
 
-      const sameExtras =
-        JSON.stringify(
-          item.extras?.sort((a, b) => a.name.localeCompare(b.name))
-        ) ===
-        JSON.stringify(
-          newCartItem.extras?.sort((a, b) => a.name.localeCompare(b.name))
-        );
+        const sameExtras =
+          JSON.stringify(
+            item.extras?.sort((a, b) => {
+              const nameA = a.name || "";
+              const nameB = b.name || "";
+              return nameA.localeCompare(nameB);
+            })
+          ) ===
+          JSON.stringify(
+            newCartItem.extras?.sort((a, b) => {
+              const nameA = a.name || "";
+              const nameB = b.name || "";
+              return nameA.localeCompare(nameB);
+            })
+          );
 
-      return sameIdAndSize && sameExtras;
-    });
+        return sameIdAndSize && sameExtras;
+      });
 
-    if (existingItemIndex >= 0) {
-      cart[existingItemIndex].quantity += 1;
-    } else {
-      cart.push(newCartItem);
+      // 4. Mennyiség növelése vagy új tétel hozzáadása
+      if (existingItemIndex >= 0) {
+        cart[existingItemIndex].quantity += 1;
+      } else {
+        cart.push(newCartItem);
+      }
+
+      // 5. Kosár mentése
+      await AsyncStorage.setItem("cart", JSON.stringify(cart));
+      console.log("A termék sikeresen hozzáadva a kosárhoz.");
+
+      Alert.alert("Siker", "A terméket sikeresen hozzáadtad a kosárhoz!");
+    } catch (error) {
+      console.error("Hiba a kosár mentésekor:", error);
+      Alert.alert("Hiba", "Nem sikerült hozzáadni a terméket a kosárhoz.");
     }
-
-    await AsyncStorage.setItem("cart", JSON.stringify(cart));
-
-    Alert.alert("A terméket sikeresen hozzáadtad a kosárhoz!");
   };
 
   return (
@@ -219,11 +241,9 @@ const FoodDetail = () => {
           {/* Ár + Kosárba gomb */}
           <Text style={FoodDetailStyles.price}>Ár: {finalPrice} Ft</Text>
 
-          <TouchableOpacity style={FoodDetailStyles.addToCartButton}>
-            <Text style={FoodDetailStyles.addToCartText} onPress={saveCart}>
-              KOSÁRBA TESZEM
-            </Text>
-          </TouchableOpacity>
+          <PrimaryButton onPress={saveCart}>
+            <Text style={FoodDetailStyles.addToCartText}>KOSÁRBA TESZEM</Text>
+          </PrimaryButton>
 
           {/* További étel adatok: név, leírás, kép, stb. */}
           <StatusBar style="auto" />
