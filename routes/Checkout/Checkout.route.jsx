@@ -75,7 +75,6 @@ export default function CheckoutRoute() {
       const filteredCart = cart.map((item) => ({
         name: item.name,
         quantity: item.quantity,
-        price: totalPrice,
         size: item.sizeName || "", // ha van ilyen meződ
         extras:
           item.extras?.map((extra) => ({
@@ -92,6 +91,7 @@ export default function CheckoutRoute() {
           note,
           status: "active",
           cart: filteredCart,
+          price: totalPrice,
           createdAt: Timestamp.now(),
         });
 
@@ -164,7 +164,7 @@ export default function CheckoutRoute() {
           <TextInput
             style={CheckoutStyles.input}
             placeholder="3. emelet, 2. ajtó"
-            value={form.address}
+            value={form.note}
             onChangeText={(text) => handleInputChange("note", text)}
           />
 

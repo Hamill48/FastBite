@@ -6,6 +6,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import HomeStack from "./navigation/HomeStack";
 import MenuStack from "./navigation/MenuStack";
 import CartStack from "./navigation/CartStack";
+import AdminRoute from "./routes/Admin/Admin.route";
 
 const Tab = createBottomTabNavigator();
 
@@ -44,6 +45,16 @@ export default function App() {
             options={{
               tabBarIcon: ({ color, size }) => (
                 <Ionicons name="cart-outline" size={size} color={color} />
+              ),
+            }}
+          />
+
+          <Tab.Screen
+            name="Felhasználó"
+            component={AdminRoute}
+            options={{
+              tabBarIcon: ({ color, size }) => (
+                <Ionicons name="person-outline" size={size} color={color} />
               ),
             }}
           />
